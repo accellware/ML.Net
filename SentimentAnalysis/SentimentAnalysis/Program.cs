@@ -55,21 +55,22 @@
 
             var sentimentsAndPredictions = sentiments.Zip(predictions, (sentiment, prediction) => (sentiment, prediction));
 
-            foreach(var item in sentimentsAndPredictions)
+            foreach(var (sentiment, prediction) in sentimentsAndPredictions)
             {
-                Console.WriteLine($"Sentiment: {item.sentiment.SentimentText} | Prediction: {(item.prediction.Sentiment ? "Positive" : "Negative")}");
+                Console.WriteLine($"Sentiment: {sentiment.SentimentText} | Prediction: {(prediction.Sentiment ? "Positive" : "Negative")}");
             }
         }
 
         static async Task<PredictionModel<SentimentData, SentimentPrediction>> TrainAsync()
         {
-            var pipeline = new LearningPipeline();
+            var pipeline = new LearningPipeline
+            {
+                new TextLoader(_dataPath).CreateFrom<SentimentData>(),
 
-            pipeline.Add(new TextLoader(_dataPath).CreateFrom<SentimentData>());
+                new TextFeaturizer("Features", "SentimentText"),
 
-            pipeline.Add(new TextFeaturizer("Features", "SentimentText"));
-
-            pipeline.Add(new FastTreeBinaryClassifier() { NumLeaves = 13, NumTrees = 13, MinDocumentsInLeafs = 8 });
+                new FastTreeBinaryClassifier() { NumLeaves = 13, NumTrees = 13, MinDocumentsInLeafs = 8 }
+            };
 
             var model = pipeline.Train<SentimentData, SentimentPrediction>();
 
