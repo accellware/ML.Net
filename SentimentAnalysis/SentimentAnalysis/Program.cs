@@ -45,6 +45,7 @@
                 new SentimentData{ SentimentText = "Not that good." },
                 new SentimentData{ SentimentText = "Somehow good." },
                 new SentimentData{ SentimentText = "I will not recommand this to anybody." },
+                new SentimentData{ SentimentText = "Simo is a good man." },
             };
 
             var predictions = model.Predict(sentiments);
@@ -69,7 +70,7 @@
 
                 new TextFeaturizer("Features", "SentimentText"),
 
-                new FastTreeBinaryClassifier() { NumLeaves = 13, NumTrees = 13, MinDocumentsInLeafs = 8 }
+                new FastTreeBinaryClassifier() { NumLeaves = 15, NumTrees = 15, MinDocumentsInLeafs = 10 }
             };
 
             var model = pipeline.Train<SentimentData, SentimentPrediction>();
